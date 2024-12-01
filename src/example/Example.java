@@ -4,31 +4,21 @@ import framework.AOCParent;
 
 import java.util.List;
 
-class Example extends AOCParent {
-    public static void main(String[] args) {
-        part1();
-        part2();
-    }
+public class Example extends AOCParent {
 
-    private static void part1() {
-        startPart(1);
-
+    @Override
+    public void part1() {
         List<String> lines = InputLoaderExample.loadLines();
         for (String line : lines) {
-            System.out.println(line);
+            printSolution(line);
         }
-
-        endPart();
     }
 
-    private static void part2() {
-        startPart(2);
-
+    @Override
+    public void part2() {
         List<String> lines = InputLoaderExample.loadLines("example.txt");
         for (String line : lines) {
-            System.out.println(line);
+            printSolution(line);
         }
-
-        endPart();
     }
 }

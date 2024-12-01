@@ -3,20 +3,13 @@ package dec02;
 import framework.AOCParent;
 
 public class Dec02 extends AOCParent {
-
-    public static void main(String[] args) {
+    @Override
+    public void part1() {
 
     }
 
-    private static void part1() {
-        startPart(1);
+    @Override
+    public void part2() {
 
-        endPart();
-    }
-
-    private static void part2() {
-        startPart(2);
-
-        endPart();
     }
 }

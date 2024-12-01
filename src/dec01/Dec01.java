@@ -7,16 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class Dec01 extends AOCParent {
+public class Dec01 extends AOCParent {
 
-    public static void main(String[] args) {
-        part1();
-        part2();
-    }
-
-    private static void part1() {
-        startPart(1);
-
+    @Override
+    public void part1() {
         List<Integer> left = InputLoader.loadLeft();
         List<Integer> right = InputLoader.loadRight();
 
@@ -30,13 +24,10 @@ class Dec01 extends AOCParent {
         }
 
         printSolution(result);
-
-        endPart();
     }
 
-    private static void part2() {
-        startPart(2);
-
+    @Override
+    public void part2() {
         List<Integer> left = InputLoader.loadLeft();
         List<Integer> right = InputLoader.loadRight();
 
@@ -54,8 +45,6 @@ class Dec01 extends AOCParent {
         }
 
         printSolution(result);
-
-        endPart();
     }
 
 }
