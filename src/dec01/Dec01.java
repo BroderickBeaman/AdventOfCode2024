@@ -23,13 +23,13 @@ class Dec01 extends AOCParent {
         Collections.sort(left);
         Collections.sort(right);
 
-        long result = 0;
+        long result = 0L;
 
         for (int i = 0; i < left.size(); i++) {
             result += Math.abs(left.get(i) - right.get(i));
         }
 
-        System.out.println("Solution: " + result);
+        printSolution(result);
 
         endPart();
     }
@@ -47,13 +47,13 @@ class Dec01 extends AOCParent {
             rightFrequencyMap.replace(currentInt, rightFrequencyMap.get(currentInt) + 1);
         }
 
-        long result = 0;
+        long result = 0L;
 
         for (Integer currentInt : left) {
             result += (long) currentInt * rightFrequencyMap.getOrDefault(currentInt, 0);
         }
 
-        System.out.println("Solution: " + result);
+        printSolution(result);
 
         endPart();
     }

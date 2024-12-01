@@ -23,4 +23,12 @@ public class AOCParent {
         System.out.println("Total execution time: " + (end - start) + "ms");
         System.out.println();
     }
+
+    /**
+     * Prints the solution to the console
+     * @param solution the solution
+     */
+    public static void printSolution(Object solution) {
+        System.out.println("Solution: " + solution);
+    }
 }
