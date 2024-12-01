@@ -14,14 +14,7 @@ public class InputLoaderParent {
      * @return Each line from the input as an entry in a List of Strings
      */
     public static List<String> loadLines() {
-        List<String> allLines = null;
-        try {
-            allLines = Files.readAllLines(Paths.get("resources/input.txt"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return allLines;
+        return loadLines("input.txt");
     }
 
     /**
