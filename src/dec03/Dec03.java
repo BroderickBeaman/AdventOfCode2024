@@ -15,16 +15,16 @@ public class Dec03 extends AOCParent {
     @Override
     public void part2() {
         SortedMap<Integer, Object> inputMap = InputLoader.loadPart2Input();
-        long solution = 0;
+        long sum = 0;
         boolean enabled = true;
         for (Map.Entry<Integer, Object> entry : inputMap.entrySet()) {
             if (entry.getValue() instanceof Boolean) {
                 enabled = (boolean) entry.getValue();
             } else if (enabled) {
                 Instruction instruction = (Instruction) entry.getValue();
-                solution += instruction.multiply();
+                sum += instruction.multiply();
             }
         }
-        printSolution(solution);
+        printSolution(sum);
     }
 }
