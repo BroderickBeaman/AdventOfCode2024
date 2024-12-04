@@ -1,5 +1,7 @@
 package dec04;
 
+import java.util.Set;
+
 enum Direction {
     N(-1,0),
     S(1, 0),
@@ -18,11 +20,29 @@ enum Direction {
         this.col = col;
     }
 
-    public int getRow() {
+    int getRow() {
         return row;
     }
 
-    public int getCol() {
+    int getCol() {
         return col;
+    }
+
+    Direction fromRowCol(int row, int col) {
+        for (Direction direction : values()) {
+            if (row == this.row && col == this.col) {
+                return direction;
+            }
+        }
+        throw new RuntimeException("Unrecognized direction");
+    }
+
+    Direction opposite() {
+        return fromRowCol(this.row * -1, this.col * -1);
+    }
+
+    Set<Direction> ninetyDegrees() {
+        //TODO fix this
+        return null;
     }
 }
