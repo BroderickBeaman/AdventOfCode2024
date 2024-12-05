@@ -1,5 +1,8 @@
 package dec04;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 enum Direction {
@@ -11,6 +14,28 @@ enum Direction {
     NE(-1, 1),
     SW(1, -1),
     SE(1, 1);
+
+    static final Map<Direction, Direction> OPPOSITES;
+    static final Set<Direction> DIAGONALS;
+    static final Map<Direction, Set<Direction>> CORNERS;
+
+    static {
+        OPPOSITES = new HashMap<>();
+        for (Direction direction : Direction.values()) {
+            OPPOSITES.put(direction, direction.opposite());
+        }
+
+        DIAGONALS = Set.of(NW, NE, SW, SE);
+
+        CORNERS = new HashMap<>();
+
+        for (Direction direction : DIAGONALS) {
+            Set<Direction> tempDiagonals = new HashSet<>(DIAGONALS);
+            tempDiagonals.remove(direction);
+            tempDiagonals.remove(OPPOSITES.get(direction));
+            CORNERS.put(direction, tempDiagonals);
+        }
+    }
 
     private int row;
     private int col;
@@ -28,21 +53,16 @@ enum Direction {
         return col;
     }
 
-    Direction fromRowCol(int row, int col) {
+    private static Direction fromRowCol(int row, int col) {
         for (Direction direction : values()) {
-            if (row == this.row && col == this.col) {
+            if (row == direction.getRow() && col == direction.getCol()) {
                 return direction;
             }
         }
         throw new RuntimeException("Unrecognized direction");
     }
 
-    Direction opposite() {
+    private Direction opposite() {
         return fromRowCol(this.row * -1, this.col * -1);
-    }
-
-    Set<Direction> ninetyDegrees() {
-        //TODO fix this
-        return null;
     }
 }

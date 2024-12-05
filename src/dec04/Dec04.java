@@ -44,6 +44,50 @@ public class Dec04 extends AOCParent {
 
     @Override
     public void part2() {
+        Xmas[][] puzzleGrid = InputLoader.loadPuzzleGrid();
+        rowSize = puzzleGrid.length;
+        colSize = puzzleGrid[0].length;
 
+        long totalScore = 0;
+
+        for (int row = 1; row < rowSize - 1; row++) {
+            for (int col = 1; col < colSize - 1; col++) {
+               if (checkForCross(puzzleGrid, row, col)) {
+                   totalScore++;
+               }
+            }
+        }
+
+        printSolution(totalScore);
+    }
+
+    private static boolean checkForCross(Xmas[][] puzzleGrid, int row, int col) {
+        if (puzzleGrid[row][col] == Xmas.A) {
+            Coordinate aPos = new Coordinate(row, col);
+            for (Direction direction : Direction.DIAGONALS) {
+                Coordinate mPos = aPos.addDirection(direction);
+
+                if (puzzleGrid[mPos.row()][mPos.col()] != Xmas.M) {
+                    continue;
+                }
+
+                Coordinate opposite = aPos.addDirection(Direction.OPPOSITES.get(direction));
+
+                if (puzzleGrid[opposite.row()][opposite.col()] != Xmas.S) {
+                    continue;
+                }
+
+                for (Direction corner : Direction.CORNERS.get(direction)) {
+                    Coordinate cornerPos = aPos.addDirection(corner);
+                    Coordinate oppositeCornerPos = aPos.addDirection(Direction.OPPOSITES.get(corner));
+                    if (puzzleGrid[cornerPos.row()][cornerPos.col()] == Xmas.M
+                            && puzzleGrid[oppositeCornerPos.row()][oppositeCornerPos.col()] == Xmas.S) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }
