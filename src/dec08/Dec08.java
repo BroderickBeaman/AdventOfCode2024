@@ -35,14 +35,12 @@ public class Dec08 extends AOCParent {
                     Coordinate antinode1 = antenna1.createAntinode(antenna2);
                     Coordinate antinode2 = antenna2.createAntinode(antenna1);
 
-                    if (antinode1.isInBounds(rows, cols) && !grid[antinode1.row()][antinode1.col()]) {
-                        grid[antinode1.row()][antinode1.col()] = true;
-                        solution++;
+                    if (antinode1.isInBounds(rows, cols)) {
+                        incrementSolution(antinode1.row(), antinode1.col());
                     }
 
-                    if (antinode2.isInBounds(rows, cols) && !grid[antinode2.row()][antinode2.col()]) {
-                        grid[antinode2.row()][antinode2.col()] = true;
-                        solution++;
+                    if (antinode2.isInBounds(rows, cols)) {
+                        incrementSolution(antinode2.row(), antinode2.col());
                     }
                 }
             }
@@ -61,14 +59,13 @@ public class Dec08 extends AOCParent {
 
         for (Map.Entry<Character, List<Coordinate>> entry : antennaMap.entrySet()) {
             List<Coordinate> coordinates = entry.getValue();
+
+            // All Antennae get an antinode
             for (Coordinate antenna : coordinates) {
-                if (!grid[antenna.row()][antenna.col()]) {
-                    grid[antenna.row()][antenna.col()] = true;
-                    solution++;
-                }
+                incrementSolution(antenna.row(), antenna.col());
             }
 
-            // Can't create antinodes where there is only one antenna
+            // Can't generate new antinodes where there is only one antenna
             if (coordinates.size() == 1) {
                 continue;
             }
@@ -82,10 +79,7 @@ public class Dec08 extends AOCParent {
                     Coordinate distance = antenna1.distance(antenna2);
                     Coordinate maybeAntinode = antenna1.createAntinode(antenna2);
                     while (maybeAntinode.isInBounds(rows, cols)) {
-                        if (!grid[maybeAntinode.row()][maybeAntinode.col()]) {
-                            grid[maybeAntinode.row()][maybeAntinode.col()] = true;
-                            solution++;
-                        }
+                        incrementSolution(maybeAntinode.row(), maybeAntinode.col());
                         maybeAntinode = new Coordinate(
                                 maybeAntinode.row() - distance.row(),
                                 maybeAntinode.col() - distance.col()
@@ -95,10 +89,7 @@ public class Dec08 extends AOCParent {
                     distance = antenna2.distance(antenna1);
                     maybeAntinode = antenna2.createAntinode(antenna1);
                     while (maybeAntinode.isInBounds(rows, cols)) {
-                        if (!grid[maybeAntinode.row()][maybeAntinode.col()]) {
-                            grid[maybeAntinode.row()][maybeAntinode.col()] = true;
-                            solution++;
-                        }
+                        incrementSolution(maybeAntinode.row(), maybeAntinode.col());
                         maybeAntinode = new Coordinate(
                                 maybeAntinode.row() - distance.row(),
                                 maybeAntinode.col() - distance.col()
