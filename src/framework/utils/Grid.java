@@ -1,7 +1,9 @@
 package framework.utils;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -134,6 +136,23 @@ public class Grid<T> {
             return;
         }
         throw new IndexOutOfBoundsException("(" + row + "," + col + ") does not reside within the grid");
+    }
+
+    /**
+     * Finds all locations where a specified value is located
+     * @param value The value to search for
+     * @return All locations where that value is located
+     */
+    public List<Coordinate> findValue(T value) {
+        List<Coordinate> locations = new ArrayList<>();
+        for (int row = 0; row < rows(); row++) {
+            for (int col = 0; col < cols(); col++) {
+                if (Objects.equals(get(row, col), value)) {
+                    locations.add(new Coordinate(row, col));
+                }
+            }
+        }
+        return locations;
     }
 
     @Override
