@@ -2,6 +2,8 @@ package framework.utils;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -68,5 +70,12 @@ class GridTest {
         Integer[][] intArrays = {{1,2,3}, {4,5,6}};
         Grid<Integer> grid = new Grid<>(intArrays);
         assertThrows(IndexOutOfBoundsException.class, () -> grid.set(69, -1, 1));
+    }
+
+    @Test
+    void findValue() {
+        Integer[][] intArrays = {{1,2,4}, {4,5,6}};
+        Grid<Integer> grid = new Grid<>(intArrays);
+        assertEquals(List.of(new Coordinate(0, 2), new Coordinate(1, 0)), grid.findValue(4));
     }
 }
