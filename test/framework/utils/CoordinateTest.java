@@ -27,4 +27,10 @@ class CoordinateTest {
         assertEquals(new Coordinate(8, 5), first.addCoordinate(second));
     }
 
+    @Test
+    void orthogonal() {
+        //TODO: Fill in test
+    }
+
+
 }

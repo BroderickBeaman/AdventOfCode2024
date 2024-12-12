@@ -1,5 +1,7 @@
 package framework.utils;
 
+import java.util.Set;
+
 public enum Direction {
     N(-1, 0),
     E(0, 1),
@@ -20,6 +22,13 @@ public enum Direction {
 
     public int getCol() {
         return col;
+    }
+
+    public Set<Direction> ninetyDegrees() {
+        return switch (this) {
+            case N, S -> Set.of(E, W);
+            case E, W -> Set.of(N, S);
+        };
     }
 
     public Coordinate toCoordinate() {

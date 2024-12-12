@@ -1,6 +1,7 @@
 package framework.utils;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Class representing the position in a 2-dimensional grid
@@ -54,6 +55,19 @@ public class Coordinate {
      */
     public Coordinate addCoordinate(Coordinate other) {
         return new Coordinate(this.row + other.row, this.col + other.col);
+    }
+
+    /**
+     * Returns a set of coordinates orthogonally adjacent to this coordinate
+     * @return The set of orthogonally adjacent coordinates
+     */
+    public Set<Coordinate> orthogonal() {
+        return Set.of(
+                new Coordinate(row - 1, col),
+                new Coordinate(row + 1, col),
+                new Coordinate(row, col - 1),
+                new Coordinate(row, col + 1)
+        );
     }
 
     @Override
