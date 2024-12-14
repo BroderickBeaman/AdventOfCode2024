@@ -166,4 +166,16 @@ public class Grid<T> {
     public int hashCode() {
         return Arrays.deepHashCode(grid);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int row = 0; row < rows(); row++) {
+            for (int col = 0; col < cols(); col++) {
+                stringBuilder.append(get(row, col));
+            }
+            stringBuilder.append(System.lineSeparator());
+        }
+        return stringBuilder.toString();
+    }
 }
