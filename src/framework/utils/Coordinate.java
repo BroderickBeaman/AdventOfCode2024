@@ -58,6 +58,15 @@ public class Coordinate {
     }
 
     /**
+     * Generate a new coordinate by moving a single space in the specified direction
+     * @param direction The direction to move
+     * @return The new coordinate
+     */
+    public Coordinate addDirection(Direction direction) {
+        return addCoordinate(direction.toCoordinate());
+    }
+
+    /**
      * Returns a set of coordinates orthogonally adjacent to this coordinate
      * @return The set of orthogonally adjacent coordinates
      */
