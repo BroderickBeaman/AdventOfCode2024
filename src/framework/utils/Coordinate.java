@@ -70,6 +70,24 @@ public class Coordinate {
         );
     }
 
+    /**
+     * Return a new Coordinate with the row value incremented by the specified amount
+     * @param row The amount to increment
+     * @return The new Coordinate
+     */
+    public Coordinate addRow(Integer row) {
+        return new Coordinate(row() + row, col());
+    }
+
+    /**
+     * Return a new Coordinate with the col value incremented by the specified amount
+     * @param col The amount to increment
+     * @return The new Coordinate
+     */
+    public Coordinate addCol(Integer col) {
+        return new Coordinate(row(), col() + col);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
