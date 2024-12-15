@@ -74,7 +74,8 @@ public class Dec15 extends AOCParent {
 
         Coordinate robot = warehouse.findValue(ElementP2.ROBOT).getFirst();
 
-        for (Direction command : commands) {
+        for (int i = 0; i < commands.size(); i++) {
+            Direction command = commands.get(i);
             Coordinate next = robot.addCoordinate(command.toCoordinate());
             ElementP2 atNext = warehouse.get(next);
 
@@ -93,13 +94,13 @@ public class Dec15 extends AOCParent {
 
                 // We are always considering the coordinate of the box as the coordinate of the left half.
                 Coordinate boxCoordinate = atNext.equals(ElementP2.BOX_LEFT) ? next : next.addCol(-1);
-                Stack<Coordinate> boxesToMove = new Stack<>();
+                Queue<Coordinate> boxesToMove = new LinkedList<>();
                 moveBox(warehouse, boxesToMove, boxCoordinate, command);
 
                 switch (command) {
                     case E -> {
                         while (!boxesToMove.isEmpty()) {
-                            Coordinate box = boxesToMove.pop();
+                            Coordinate box = boxesToMove.poll();
                             warehouse.set(ElementP2.EMPTY, box);
                             warehouse.set(ElementP2.BOX_LEFT, box.addCol(1));
                             warehouse.set(ElementP2.BOX_RIGHT, box.addCol(2));
@@ -107,7 +108,7 @@ public class Dec15 extends AOCParent {
                     }
                     case W -> {
                         while (!boxesToMove.isEmpty()) {
-                            Coordinate box = boxesToMove.pop();
+                            Coordinate box = boxesToMove.poll();
                             warehouse.set(ElementP2.EMPTY, box.addCol(1));
                             warehouse.set(ElementP2.BOX_RIGHT, box);
                             warehouse.set(ElementP2.BOX_LEFT, box.addCol(-1));
@@ -115,7 +116,7 @@ public class Dec15 extends AOCParent {
                     }
                     case N, S -> {
                         while (!boxesToMove.isEmpty()) {
-                            Coordinate boxLeft = boxesToMove.pop();
+                            Coordinate boxLeft = boxesToMove.poll();
                             Coordinate boxRight = boxLeft.addCol(1);
                             warehouse.set(ElementP2.EMPTY, boxLeft);
                             warehouse.set(ElementP2.EMPTY, boxRight);
@@ -131,6 +132,7 @@ public class Dec15 extends AOCParent {
             } catch (BoxMoveException e) {
 
             }
+
         }
 
         System.out.println(warehouse);
@@ -147,7 +149,7 @@ public class Dec15 extends AOCParent {
 
     private void moveBox(
             Grid<ElementP2> warehouse,
-            Stack<Coordinate> boxesToMove,
+            Queue<Coordinate> boxesToMove,
             Coordinate location,
             Direction direction
     ) {
@@ -161,13 +163,11 @@ public class Dec15 extends AOCParent {
                 throw new BoxMoveException();
             }
 
-            if (atNext.equals(ElementP2.EMPTY)) {
-                boxesToMove.push(boxLeft);
-                return;
+            if (!atNext.equals(ElementP2.EMPTY)) {
+                moveBox(warehouse, boxesToMove, boxLeft.addCol(2), direction);
             }
+            boxesToMove.add(boxLeft);
 
-            boxesToMove.push(boxLeft);
-            moveBox(warehouse, boxesToMove, boxLeft.addCol(2), direction);
         } else if (direction.equals(Direction.W)) {
             Coordinate next = boxLeft.addCoordinate(direction.toCoordinate());
             ElementP2 atNext = warehouse.get(next);
@@ -175,13 +175,11 @@ public class Dec15 extends AOCParent {
                 throw new BoxMoveException();
             }
 
-            if (atNext.equals(ElementP2.EMPTY)) {
-                boxesToMove.push(boxLeft);
-                return;
+            if (!atNext.equals(ElementP2.EMPTY)) {
+                moveBox(warehouse, boxesToMove, boxLeft.addCol(-2), direction);
             }
+            boxesToMove.add(boxLeft);
 
-            boxesToMove.push(boxLeft);
-            moveBox(warehouse, boxesToMove, boxLeft.addCol(-2), direction);
         } else {
             Coordinate nextLeft = boxLeft.addCoordinate(direction.toCoordinate());
             Coordinate nextRight = boxRight.addCoordinate(direction.toCoordinate());
@@ -192,12 +190,9 @@ public class Dec15 extends AOCParent {
                 throw new BoxMoveException();
             }
 
-            boxesToMove.push(boxLeft);
-
             // One box directly above or below
             if (atNextRight.equals(ElementP2.BOX_RIGHT)) {
                 moveBox(warehouse, boxesToMove, nextLeft, direction);
-                return;
             }
 
             // Box above or below and to the left
@@ -208,6 +203,10 @@ public class Dec15 extends AOCParent {
             // Box above or below and to the right
             if (atNextRight.equals(ElementP2.BOX_LEFT)) {
                 moveBox(warehouse, boxesToMove, nextRight, direction);
+            }
+
+            if (!boxesToMove.contains(boxLeft)) {
+                boxesToMove.add(boxLeft);
             }
         }
     }
