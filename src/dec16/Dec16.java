@@ -17,7 +17,6 @@ public class Dec16 extends AOCParent {
 
     private long computeScoreP1(Grid<Maze> maze) {
         PriorityQueue<Node> nodeMinHeap = new PriorityQueue<>();
-        Map<MazePosition, Long> minValues = new HashMap<>();
         Set<MazePosition> explored = new HashSet<>();
 
         Coordinate startLocation = maze.findValue(Maze.SOURCE).getFirst();
@@ -25,49 +24,33 @@ public class Dec16 extends AOCParent {
         MazePosition startPosition = new MazePosition(startLocation, startDirection);
 
         nodeMinHeap.add(new Node(startPosition, 0L));
-        minValues.put(startPosition, 0L);
 
         while(!nodeMinHeap.isEmpty()) {
             Node node = nodeMinHeap.poll();
-
-            if (explored.contains(node.position())) {
-                continue;
-            }
-
             explored.add(node.position());
-
             Coordinate currentLocation = node.position().location();
+            Direction currentFacing = node.position().facing();
 
             if (maze.get(currentLocation).equals(Maze.TARGET)) {
                 return node.score();
             }
 
-            Direction currentFacing = node.position().facing();
-            Coordinate nextInDirection = currentLocation.addDirection(currentFacing);
-            MazePosition newPosition = new MazePosition(nextInDirection, currentFacing);
-            if (!explored.contains(newPosition)) {
-                if (!maze.get(nextInDirection).equals(Maze.WALL)) {
-                    long newScore = node.score() + 1;
-                    minValues.computeIfAbsent(newPosition, key -> newScore);
-                    if (newScore <= minValues.get(newPosition)) {
-                        minValues.put(newPosition, newScore);
-                        nodeMinHeap.add(new Node(newPosition, newScore));
-                    }
-                }
-            }
-
+            Set<Node> nextStates = new HashSet<>();
+            nextStates.add(new Node(new MazePosition(currentLocation.addDirection(currentFacing), currentFacing), node.score() + 1));
             for (Direction direction : currentFacing.ninetyDegrees()) {
-                newPosition = new MazePosition(currentLocation, direction);
-                if (!explored.contains(newPosition)) {
-                    long newScore = node.score() + 1000;
-                    minValues.computeIfAbsent(newPosition, key -> newScore);
-                    if (newScore <= minValues.get(newPosition)) {
-                        minValues.put(newPosition, newScore);
-                        nodeMinHeap.add(new Node(newPosition, newScore));
-                    }
-                }
+                nextStates.add(new Node(new MazePosition(currentLocation, direction), node.score() + 1000));
             }
 
+            for (Node nextState : nextStates) {
+                Coordinate nextLocation = nextState.position().location();
+                if (maze.get(nextLocation).equals(Maze.WALL)) {
+                    continue;
+                }
+                if (explored.contains(nextState.position())) {
+                    continue;
+                }
+                nodeMinHeap.add(nextState);
+            }
         }
 
         throw new RuntimeException("Didn't find maze end");
