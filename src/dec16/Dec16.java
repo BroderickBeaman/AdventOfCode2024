@@ -16,17 +16,17 @@ public class Dec16 extends AOCParent {
     }
 
     private long computeScoreP1(Grid<Maze> maze) {
-        PriorityQueue<Node> nodeMinHeap = new PriorityQueue<>();
+        PriorityQueue<NodeP1> nodeMinHeap = new PriorityQueue<>();
         Set<MazePosition> explored = new HashSet<>();
 
         Coordinate startLocation = maze.findValue(Maze.SOURCE).getFirst();
         Direction startDirection = Direction.E;
         MazePosition startPosition = new MazePosition(startLocation, startDirection);
 
-        nodeMinHeap.add(new Node(startPosition, 0L));
+        nodeMinHeap.add(new NodeP1(startPosition, 0L));
 
         while(!nodeMinHeap.isEmpty()) {
-            Node node = nodeMinHeap.poll();
+            NodeP1 node = nodeMinHeap.poll();
             explored.add(node.position());
             Coordinate currentLocation = node.position().location();
             Direction currentFacing = node.position().facing();
@@ -35,13 +35,13 @@ public class Dec16 extends AOCParent {
                 return node.score();
             }
 
-            Set<Node> nextStates = new HashSet<>();
-            nextStates.add(new Node(new MazePosition(currentLocation.addDirection(currentFacing), currentFacing), node.score() + 1));
+            Set<NodeP1> nextStates = new HashSet<>();
+            nextStates.add(new NodeP1(new MazePosition(currentLocation.addDirection(currentFacing), currentFacing), node.score() + 1));
             for (Direction direction : currentFacing.ninetyDegrees()) {
-                nextStates.add(new Node(new MazePosition(currentLocation, direction), node.score() + 1000));
+                nextStates.add(new NodeP1(new MazePosition(currentLocation, direction), node.score() + 1000));
             }
 
-            for (Node nextState : nextStates) {
+            for (NodeP1 nextState : nextStates) {
                 Coordinate nextLocation = nextState.position().location();
                 if (maze.get(nextLocation).equals(Maze.WALL)) {
                     continue;
@@ -62,74 +62,71 @@ public class Dec16 extends AOCParent {
         printSolution(computeScoreP2(maze));
     }
 
-    private long computeScoreP2(Grid<Maze> maze) {
-        PriorityQueue<Node> nodeMinHeap = new PriorityQueue<>();
-        Map<MazePosition, Long> minValues = new HashMap<>();
-        Set<MazePosition> explored = new HashSet<>();
-        Map<Coordinate, Set<Coordinate>> connectedLocations = new HashMap<>();
+    private Long computeScoreP2(Grid<Maze> maze) {
+        PriorityQueue<NodeP2> nodeMinHeap = new PriorityQueue<>();
+//        Set<MazePosition> explored = new HashSet<>();
 
         Coordinate startLocation = maze.findValue(Maze.SOURCE).getFirst();
         Direction startDirection = Direction.E;
         MazePosition startPosition = new MazePosition(startLocation, startDirection);
+        Map<Coordinate, Set<Coordinate>> backtrackMap = new HashMap<>();
+        Map<MazePosition, Long> lowestCostMap = new HashMap<>();
 
-        nodeMinHeap.add(new Node(startPosition, 0L));
-        minValues.put(startPosition, 0L);
+        nodeMinHeap.add(new NodeP2(startPosition, null, 0L));
+
+        MazePosition endPosition = null;
+
+        long bestEndCost = 10000000000000L;
 
         while(!nodeMinHeap.isEmpty()) {
-            Node node = nodeMinHeap.poll();
-
-            if (explored.contains(node.position())) {
+            NodeP2 node = nodeMinHeap.poll();
+            MazePosition currentPosition = node.position();
+            lowestCostMap.computeIfAbsent(currentPosition, k -> node.score());
+            if (node.score() > lowestCostMap.get(currentPosition)) {
                 continue;
             }
-
-            explored.add(node.position());
+            lowestCostMap.put(currentPosition, node.score());
 
             Coordinate currentLocation = node.position().location();
+            Direction currentFacing = node.position().facing();
 
             if (maze.get(currentLocation).equals(Maze.TARGET)) {
-                break;
-            }
-
-            Direction currentFacing = node.position().facing();
-            Coordinate nextInDirection = currentLocation.addDirection(currentFacing);
-            MazePosition newPosition = new MazePosition(nextInDirection, currentFacing);
-            if (!explored.contains(newPosition)) {
-                if (!maze.get(nextInDirection).equals(Maze.WALL)) {
-                    Long newScore = node.score() + 1;
-                    minValues.computeIfAbsent(newPosition, key -> newScore);
-                    if (newScore.equals(minValues.get(newPosition))) {
-                        minValues.put(newPosition, newScore);
-                        nodeMinHeap.add(new Node(newPosition, newScore));
-                        connectedLocations.computeIfAbsent(nextInDirection, key -> new HashSet<>());
-                        connectedLocations.get(nextInDirection).add(currentLocation);
-                    } else if (newScore < minValues.get(newPosition)) {
-                        minValues.put(newPosition, newScore);
-                        nodeMinHeap.add(new Node(newPosition, newScore));
-                        connectedLocations.put(nextInDirection, new HashSet<>());
-                        connectedLocations.get(nextInDirection).add(currentLocation);
-                    }
+                if (node.score() > bestEndCost) {
+                    break;
                 }
+                bestEndCost = node.score();
             }
 
+            backtrackMap.computeIfAbsent(currentLocation, k -> new HashSet<>());
+            if (node.previous() != null && node.previous().location() != currentLocation) {
+                backtrackMap.get(currentLocation).add(node.previous().location());
+            }
+
+
+            Set<NodeP2> nextStates = new HashSet<>();
+            nextStates.add(new NodeP2(new MazePosition(currentLocation.addDirection(currentFacing), currentFacing), node.position(), node.score() + 1));
             for (Direction direction : currentFacing.ninetyDegrees()) {
-                newPosition = new MazePosition(currentLocation, direction);
-                if (!explored.contains(newPosition)) {
-                    long newScore = node.score() + 1000;
-                    minValues.computeIfAbsent(newPosition, key -> newScore);
-                    if (newScore <= minValues.get(newPosition)) {
-                        minValues.put(newPosition, newScore);
-                        nodeMinHeap.add(new Node(newPosition, newScore));
-                    }
-                }
+                nextStates.add(new NodeP2(new MazePosition(currentLocation, direction), node.position(), node.score() + 1000));
             }
 
+            for (NodeP2 nextState : nextStates) {
+                Coordinate nextLocation = nextState.position().location();
+                if (maze.get(nextLocation).equals(Maze.WALL)) {
+                    continue;
+                }
+                if (lowestCostMap.containsKey(nextState.position()) && nextState.score() > lowestCostMap.get(nextState.position())) {
+                    continue;
+                }
+                nodeMinHeap.add(nextState);
+            }
         }
 
-        Coordinate targetCoordinate = maze.findValue(Maze.TARGET).getFirst();
         Set<Coordinate> visited = new HashSet<>();
-        traversePaths(connectedLocations, targetCoordinate, visited);
+        Coordinate endLocation = maze.findValue(Maze.TARGET).getFirst();
 
-        return visited.size();
+
+        traversePaths(backtrackMap, endLocation, visited);
+        return (long) visited.size();
     }
 
     private void traversePaths(Map<Coordinate, Set<Coordinate>> paths, Coordinate current, Set<Coordinate> visited) {
