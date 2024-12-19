@@ -9,6 +9,7 @@ import java.util.Map;
 public class Dec19 extends AOCParent {
 
     Map<String, Boolean> designCache;
+    Map<String, Long> possibleSolutionCache;
     int maxPatternLength;
 
     @Override
@@ -24,7 +25,7 @@ public class Dec19 extends AOCParent {
 
     private boolean isPossible(final List<String> patterns, String design) {
 
-        if (patterns.contains(design) || design.isEmpty()) {
+        if (design.isEmpty()) {
             return true;
         }
 
@@ -51,6 +52,37 @@ public class Dec19 extends AOCParent {
 
     @Override
     public void part2() {
+        final List<String> patterns = InputLoader.loadPatterns();
+        final List<String> designs = InputLoader.loadDesigns();
+        possibleSolutionCache = new HashMap<>();
+        maxPatternLength = patterns.stream().mapToInt(String::length).max().getAsInt();
+
+        long count = designs.stream().mapToLong(design -> possibleSolutions(patterns, design)).sum();
+        printSolution(count);
+    }
+
+    private Long possibleSolutions(final List<String> patterns, String design) {
+
+        if (design.isEmpty()) {
+            return 1L;
+        }
+
+        if (possibleSolutionCache.containsKey(design)) {
+            return possibleSolutionCache.get(design);
+        }
+
+        long possibleSolutions = 0;
+
+        for (int i = 1; i <= Math.min(maxPatternLength, design.length()); i++) {
+            String toTest = design.substring(0, i);
+            String nextDesign = design.substring(i);
+            if (patterns.contains(toTest)) {
+                possibleSolutions += possibleSolutions(patterns, nextDesign);
+            }
+        }
+
+        possibleSolutionCache.put(design, possibleSolutions);
+        return possibleSolutions;
 
     }
 }
