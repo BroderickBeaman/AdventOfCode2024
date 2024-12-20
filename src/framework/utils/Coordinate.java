@@ -49,6 +49,17 @@ public class Coordinate {
     }
 
     /**
+     * Returns the distance between two coordinates. Distance is represented by the number of vertical and horizontal
+     * steps to reach the other Coordinate
+     * @param other the other coordinate
+     * @return The distance between the two coordinates
+     */
+    public Integer distanceValue(Coordinate other) {
+        Coordinate distance = this.distance(other);
+        return Math.abs(distance.row) + Math.abs(distance.col);
+    }
+
+    /**
      * Generate a new coordinate by taking this coordinate and adding another
      * @param other The other coordinate to add
      * @return The sum of both coordinates

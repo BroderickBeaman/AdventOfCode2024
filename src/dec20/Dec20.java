@@ -18,21 +18,7 @@ public class Dec20 extends AOCParent {
 
         Map<Coordinate, Long> secondsAtLocation = buildSecondsAtLocation(start, end, maze);
         final Long targetSavings = 100L;
-        Long numCheats = 0L;
-
-        for (Map.Entry<Coordinate, Long> entry : secondsAtLocation.entrySet()) {
-            Coordinate current = entry.getKey();
-            for (Direction direction : Direction.values()) {
-                Coordinate toTest = current.addCoordinate(new Coordinate(direction.getRow() * 2, direction.getCol() * 2));
-                if (secondsAtLocation.containsKey(toTest)) {
-                    Long secondsToBeat = secondsAtLocation.get(toTest);
-                    Long savings = secondsToBeat - (entry.getValue() + 2);
-                    if (savings >= targetSavings) {
-                        numCheats++;
-                    }
-                }
-            }
-        }
+        Long numCheats = getNumCheatsP1(secondsAtLocation, targetSavings);
 
         printSolution(numCheats);
     }
@@ -58,8 +44,56 @@ public class Dec20 extends AOCParent {
         return secondsAtLocation;
     }
 
+    private static Long getNumCheatsP1(Map<Coordinate, Long> secondsAtLocation, Long targetSavings) {
+        Long numCheats = 0L;
+
+        for (Map.Entry<Coordinate, Long> entry : secondsAtLocation.entrySet()) {
+            Coordinate current = entry.getKey();
+            for (Direction direction : Direction.values()) {
+                Coordinate toTest = current.addCoordinate(new Coordinate(direction.getRow() * 2, direction.getCol() * 2));
+                if (secondsAtLocation.containsKey(toTest)) {
+                    Long secondsToBeat = secondsAtLocation.get(toTest);
+                    Long savings = secondsToBeat - (entry.getValue() + 2);
+                    if (savings >= targetSavings) {
+                        numCheats++;
+                    }
+                }
+            }
+        }
+        return numCheats;
+    }
+
     @Override
     public void part2() {
+        Grid<MazeElement> maze = InputLoader.loadMaze();
 
+        Coordinate start = maze.findValue(MazeElement.START).getFirst();
+        Coordinate end = maze.findValue(MazeElement.END).getFirst();
+
+        Map<Coordinate, Long> secondsAtLocation = buildSecondsAtLocation(start, end, maze);
+        final Long targetSavings = 100L;
+        Long numCheats = getNumCheatsP2(secondsAtLocation, targetSavings);
+
+        printSolution(numCheats);
+    }
+
+    private static Long getNumCheatsP2(Map<Coordinate, Long> secondsAtLocation, Long targetSavings) {
+        Long numCheats = 0L;
+        final long maxDistance = 20;
+
+        for (Map.Entry<Coordinate, Long> currentEntry : secondsAtLocation.entrySet()) {
+            for(Map.Entry<Coordinate, Long> toCompare : secondsAtLocation.entrySet()) {
+                int distance = currentEntry.getKey().distanceValue(toCompare.getKey());
+                if (distance == 0 || distance > maxDistance) {
+                    continue;
+                }
+                long timeToBeat = toCompare.getValue();
+                long savings = timeToBeat - (currentEntry.getValue() + distance);
+                if (savings >= targetSavings) {
+                    numCheats++;
+                }
+            }
+        }
+        return numCheats;
     }
 }
