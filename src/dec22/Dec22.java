@@ -53,7 +53,6 @@ public class Dec22 extends AOCParent {
                         deltas.get(i + 3)
                 );
 
-
                 // We've already seen this pattern for this buyer
                 if (deltaPriceMap.containsKey(deltaPattern)) {
                     continue;
@@ -67,7 +66,6 @@ public class Dec22 extends AOCParent {
             }
 
         }
-
 
         long maxValue = 0;
         PriceDeltas maxPattern = null;
