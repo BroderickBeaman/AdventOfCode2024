@@ -6,8 +6,6 @@ import java.util.*;
 
 public class Dec22 extends AOCParent {
 
-
-
     @Override
     public void part1() {
         List<SecretNumber> input = InputLoader.loadSecretNumbers();
