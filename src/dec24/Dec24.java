@@ -50,6 +50,6 @@ public class Dec24 extends AOCParent {
 
     @Override
     public void part2() {
-
+        printSolution("Solved on paper");
     }
 }

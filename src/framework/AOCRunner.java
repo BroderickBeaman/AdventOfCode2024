@@ -1,9 +1,9 @@
 package framework;
 
-import dec24.Dec24;
+import dec25.Dec25;
 
 public class AOCRunner {
     public static void main(String[] args) {
-        new Dec24().run();
+        new Dec25().run();
     }
 }
